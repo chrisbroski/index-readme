@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>README</title>
+<style type="text/css">
+html {padding: 10px 10px 200px; font-family: droid sans, sans-serif; }
+body {margin: 0 auto; max-width: 580px; }
+div.article > *:first-child {margin-top: 0; }
+div.article p {line-height: 1.4em; font-size: 17px; }
+
+h1 {border-bottom: 1px solid #ddd; }
+pre {padding: 1em; background: #eee; overflow: auto; }
+</style>
+
+<body>
+<div class="article">
+<h1>README.md</h1>
+
+<div data-src="README.md" class="mdImport"></div>
+</div>
+
+<script>
+function countHash(txt) {
+    if (!txt) {
+        return -1;
+    }
+    txt = txt.slice(0, 6);
+    return txt.lastIndexOf('#') + 1;
+}
+
+function convertFromMd(md) {
+    var aMd,// = md.split("\n"),
+        htmlTmp = '',
+        htmlNext = '',
+        countTmp = 0,
+        openTag = '',
+        htmlMd = [],
+        ii,
+        len,
+        kk,
+        kLen,
+        reLinks = /\[[^\]]+\]\([^\)]+\)/g,
+        aLinks = [],
+        linkText,
+        linkHref;
+
+    md = md.replace(/  \n/gi, "<br>"); // replace "  \n" with "<br>"
+    aMd = md.split("\n");
+    len = aMd.length;
+    aMd.push('');
+
+    for (ii = 0; ii < len - 2; ii = ii + 1) {
+        htmlTmp = aMd[ii];
+        htmlNext = aMd[ii + 1];
+        if (htmlTmp === '' || htmlTmp.slice(0, 1) === '=' || htmlTmp.slice(0, 1) === '-') {
+            continue;
+        }
+        // BLOCK
+        
+        // h1
+        if (htmlNext.slice(0, 1) === '=') {
+            htmlTmp = '<h1>' + htmlTmp + '</h1>';
+        }
+        // h2
+        if (htmlNext.slice(0, 1) === '-') {
+            htmlTmp = '<h2>' + htmlTmp + '</h2>';
+        }
+        // h3 - h6
+        if (htmlTmp.slice(0, 1) === '#') {
+            countTmp = countHash(htmlTmp);
+            htmlTmp = '<h' + countTmp + '>' + htmlTmp.slice(countTmp) + '</h' + countTmp + '>';
+        }
+        // pre
+        if (htmlTmp.slice(0, 4) === '    ') {
+            //countTmp = countHash(htmlTmp);
+            if (openTag !== 'pre') {
+                openTag = 'pre';
+                htmlTmp = '<pre>' + htmlTmp.slice(4);
+            } else {
+                htmlTmp = htmlTmp.slice(4);
+            }
+            if (htmlNext.slice(0, 4) !== '    ') {
+                openTag = '';
+                htmlTmp = htmlTmp + '</pre>' + "\n";
+            }
+            //htmlTmp = '<h' + countTmp + '>' + htmlTmp.slice(countTmp) + '</h' + countTmp + '>';
+        } else {
+            // p
+            if (htmlNext.slice(0, 1) === '') {
+                htmlTmp = '<p>' + htmlTmp;
+            }
+        }
+        
+        // INLINE
+
+        // links
+        aLinks = htmlTmp.match(reLinks);
+        if (aLinks) {
+            kLen = aLinks.length;
+            for (kk = 0; kk < kLen; kk = kk + 1) {
+                linkText = aLinks[kk].slice(1, aLinks[kk].indexOf(']('));
+                linkHref = aLinks[kk].slice(aLinks[kk].indexOf('](') + 2, -1);
+                htmlTmp = htmlTmp.replace(aLinks[kk], '<a href="' + linkHref + '">' + linkText + '</a>');
+            }
+        }
+        
+        // bold
+        aLinks = htmlTmp.match(/\*\*[^\*]+\*\*/g);
+        if (aLinks) {
+            kLen = aLinks.length;
+            for (kk = 0; kk < kLen; kk = kk + 1) {
+                console.log(aLinks[kk]);
+                htmlTmp = htmlTmp.replace(aLinks[kk], '<strong>' + aLinks[kk].slice(2, -2) + '</strong>');
+            }
+        }
+
+        // italic
+        aLinks = htmlTmp.match(/\*[^\*]+\*/g);
+        if (aLinks) {
+            kLen = aLinks.length;
+            for (kk = 0; kk < kLen; kk = kk + 1) {
+                htmlTmp = htmlTmp.replace(aLinks[kk], '<em>' + aLinks[kk].slice(1, -1) + '</em>');
+            }
+        }
+        
+        htmlMd.push(htmlTmp);
+    }
+    
+    return htmlMd.join("\n");
+}
+
+function mdInclude(filePath, el) {
+    var importedHTML = '',
+        xhr = new XMLHttpRequest();
+    // get file with ajax
+    xhr.open("GET", filePath, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+            if (xhr.status === 200 || xhr.status === 304) {
+                el.innerHTML = convertFromMd(xhr.responseText);
+            } else if (xhr.status === 404) {
+                console.log('Not found: ' + xhr.responseURL);
+            } else {
+                console.log(xhr);
+            }
+        }
+    }
+    xhr.send(null);
+}
+
+var mdIncludes = document.querySelectorAll('div.mdImport'), ii, len;
+len = mdIncludes.length;
+for (ii = 0; ii < len; ii = ii + 1) {
+    mdInclude(mdIncludes[ii].getAttribute('data-src'), mdIncludes[ii]);
+}
+</script>
