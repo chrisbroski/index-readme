@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1.2, user-scalable=no">
 <title>README</title>
 <style type="text/css">
 html {padding: 10px 10px 200px; font-family: droid sans, sans-serif; }
@@ -27,8 +28,34 @@ function countHash(txt) {
     return txt.lastIndexOf('#') + 1;
 }
 
+function replaceLink(mdLink) {
+    var linkText, linkHref = '';
+    linkText = mdLink.slice(1, mdLink.indexOf(']('));
+    linkHref = mdLink.slice(mdLink.indexOf('](') + 2, -1);
+    return '<a href="' + linkHref + '">' + linkText + '</a>'
+}
+
+function replaceBold(boldMatch) {
+    return '<strong>' + boldMatch.slice(2, -2) + '</strong>';
+}
+
+function replaceItalic(italicMatch) {
+    return '<em>' + italicMatch.slice(1, -1) + '</em>';
+}
+
+function replaceInline(txt, reReplace, replacer) {
+    var aMatch = txt.match(reReplace), ii, len;
+    if (aMatch) {
+        len = aMatch.length;
+        for (ii = 0; ii < len; ii = ii + 1) {
+            txt = txt.replace(aMatch[ii], replacer(aMatch[ii]));
+        }
+    }
+    return txt;
+}
+
 function convertFromMd(md) {
-    var aMd,// = md.split("\n"),
+    var aMd,
         htmlTmp = '',
         htmlNext = '',
         countTmp = 0,
@@ -36,19 +63,14 @@ function convertFromMd(md) {
         htmlMd = [],
         ii,
         len,
-        kk,
-        kLen,
-        reLinks = /\[[^\]]+\]\([^\)]+\)/g,
-        aLinks = [],
-        linkText,
-        linkHref;
+        reLinks = /\[[^\]]+\]\([^\)]+\)/g;
 
-    md = md.replace(/  \n/gi, "<br>"); // replace "  \n" with "<br>"
+    md = md.replace(/  \n/gi, "<br>\n"); // replace "  \n" with "<br>"
     aMd = md.split("\n");
     len = aMd.length;
     aMd.push('');
 
-    for (ii = 0; ii < len - 2; ii = ii + 1) {
+    for (ii = 0; ii < len; ii = ii + 1) {
         htmlTmp = aMd[ii];
         htmlNext = aMd[ii + 1];
         if (htmlTmp === '' || htmlTmp.slice(0, 1) === '=' || htmlTmp.slice(0, 1) === '-') {
@@ -71,7 +93,6 @@ function convertFromMd(md) {
         }
         // pre
         if (htmlTmp.slice(0, 4) === '    ') {
-            //countTmp = countHash(htmlTmp);
             if (openTag !== 'pre') {
                 openTag = 'pre';
                 htmlTmp = '<pre>' + htmlTmp.slice(4);
@@ -82,55 +103,34 @@ function convertFromMd(md) {
                 openTag = '';
                 htmlTmp = htmlTmp + '</pre>' + "\n";
             }
-            //htmlTmp = '<h' + countTmp + '>' + htmlTmp.slice(countTmp) + '</h' + countTmp + '>';
         } else {
             // p
             if (htmlNext.slice(0, 1) === '') {
                 htmlTmp = '<p>' + htmlTmp;
             }
         }
-        
+
         // INLINE
 
         // links
-        aLinks = htmlTmp.match(reLinks);
-        if (aLinks) {
-            kLen = aLinks.length;
-            for (kk = 0; kk < kLen; kk = kk + 1) {
-                linkText = aLinks[kk].slice(1, aLinks[kk].indexOf(']('));
-                linkHref = aLinks[kk].slice(aLinks[kk].indexOf('](') + 2, -1);
-                htmlTmp = htmlTmp.replace(aLinks[kk], '<a href="' + linkHref + '">' + linkText + '</a>');
-            }
-        }
-        
+        htmlTmp = replaceInline(htmlTmp, reLinks, replaceLink);
+
         // bold
-        aLinks = htmlTmp.match(/\*\*[^\*]+\*\*/g);
-        if (aLinks) {
-            kLen = aLinks.length;
-            for (kk = 0; kk < kLen; kk = kk + 1) {
-                console.log(aLinks[kk]);
-                htmlTmp = htmlTmp.replace(aLinks[kk], '<strong>' + aLinks[kk].slice(2, -2) + '</strong>');
-            }
-        }
+        htmlTmp = replaceInline(htmlTmp, /\*\*[^\*]+\*\*/g, replaceBold);
 
         // italic
-        aLinks = htmlTmp.match(/\*[^\*]+\*/g);
-        if (aLinks) {
-            kLen = aLinks.length;
-            for (kk = 0; kk < kLen; kk = kk + 1) {
-                htmlTmp = htmlTmp.replace(aLinks[kk], '<em>' + aLinks[kk].slice(1, -1) + '</em>');
-            }
-        }
-        
+        htmlTmp = replaceInline(htmlTmp, /\*[^\*]+\*/g, replaceItalic);
+
         htmlMd.push(htmlTmp);
     }
-    
+
     return htmlMd.join("\n");
 }
 
 function mdInclude(filePath, el) {
     var importedHTML = '',
         xhr = new XMLHttpRequest();
+
     // get file with ajax
     xhr.open("GET", filePath, true);
     xhr.onreadystatechange = function() {
@@ -147,9 +147,6 @@ function mdInclude(filePath, el) {
     xhr.send(null);
 }
 
-var mdIncludes = document.querySelectorAll('div.mdImport'), ii, len;
-len = mdIncludes.length;
-for (ii = 0; ii < len; ii = ii + 1) {
-    mdInclude(mdIncludes[ii].getAttribute('data-src'), mdIncludes[ii]);
-}
+mdInclude('README.md', document.querySelector('div.mdImport'));
+
 </script>
