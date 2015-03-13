@@ -65,7 +65,7 @@ function convertFromMd(md) {
         len,
         reLinks = /\[[^\]]+\]\([^\)]+\)/g;
 
-    md = md.replace(/  \n/gi, "<br>\n"); // replace "  \n" with "<br>"
+    md = md.replace(/  \n/gi, "<br>"); // replace "  \n" with "<br>"
     aMd = md.split("\n");
     len = aMd.length;
     aMd.push('');
@@ -117,9 +117,11 @@ function convertFromMd(md) {
 
         // bold
         htmlTmp = replaceInline(htmlTmp, /\*\*[^\*]+\*\*/g, replaceBold);
+        htmlTmp = replaceInline(htmlTmp, /\_\_[^\_]+\_\_/g, replaceBold);
 
         // italic
         htmlTmp = replaceInline(htmlTmp, /\*[^\*]+\*/g, replaceItalic);
+        htmlTmp = replaceInline(htmlTmp, /\_[^\_]+\_/g, replaceItalic);
 
         htmlMd.push(htmlTmp);
     }
