@@ -3,7 +3,7 @@ README Index
 
 An index.html page that automatically imports and displays the README.md converted to HTML.
 
-Uses the [spec](http://daringfireball.net/projects/markdown/syntax) from Daring Fireball.
+The examples on this page are from the [spec](http://daringfireball.net/projects/markdown/syntax) by Daring Fireball. The styles are based on [Github style markdown](https://help.github.com/articles/github-flavored-markdown/)
 
 Requirements
 ------------
@@ -24,7 +24,7 @@ It should handle adding &lt;p&gt; tags properly, plus add &lt;br&gt; tags for tw
 
 ###Code
 
-Code block should start with 4 spaces
+Code blocks should start with 4 spaces
 
     function getEventTarget(e) {
         var targ;
@@ -34,6 +34,13 @@ Code block should start with 4 spaces
         }
         return targ;
     }
+
+###HTML comment blocks
+
+Do you see anything just below? that's good then.
+
+<!--
+This is some comments -->
 
 ###Block Quotes
 
@@ -53,7 +60,6 @@ It should also dealing with all other MD stuff inside of a quote.
 > 
 >     return shell_exec("echo $input | $markdown_script");
 
-<!--
 It should also dealing with all other MD stuff inside of a quote.
 
 > ## This is a header.
@@ -64,7 +70,6 @@ It should also dealing with all other MD stuff inside of a quote.
 > Here's some example code:
 > 
 >     return shell_exec("echo $input | $markdown_script");
--->
 
 ###Lists
 
@@ -95,6 +100,12 @@ Two asterisks should surround **bold text**. It should also handle two __undersc
 ####Italics
 
 One asterisk should surround *italicized text* It should also handle _underscores_.
+
+####Code
+
+If you want to demo some code inline like so `if (x < y)` use back ticks.
+
+``There is a literal backtick (`) here.``
 
 <!--
 ###Automatic Escaping of Special Characters
@@ -145,3 +156,43 @@ This is a regular paragraph.
 </table>
 
 This is another regular paragraph.
+
+Not Yet Implemented
+-------------------
+
+###Automatic Escaping of Special Characters
+
+I'd like to escape &amp; when it is not a part of a HTML entity (&amp;nbsp; for example) and &lt; when it isn't part of an HTML tag. How do I determine the difference?
+
+###Escaping
+
+The back slash should make any MD character be displayed as a literal:
+
+###Markdown inside list items
+
+It currently does not process block element: paragraphs and code blocks.
+
+###Images
+
+This seems easy enough to implement, but not much benefit.
+
+###URL autolinking
+
+I like Github's auto-linking, (link anything starting with http:// or https://)
+
+###Title Attribute on Hyperlinks
+
+No Desire to Implement
+----------------------
+
+If I keep working on this, I may implement these features but I don't see much value in them.
+
+What is the point of using a dash (-) for unordered lists? If the asterisk and plus aren't good enough for you, you are too high-maintenance.
+
+Hanging indents on list items is just stupid. Use text wrapping.
+
+Daring Fireball's autolinking (surrounding URLs with and brackets) seems pointless and inconvenient to implement.
+
+Reference-style link and image URLs. I really don't see the advantage of these.
+
+Github flavor extras: strikethrough, fenced code blocks, sytax highlighting and tables

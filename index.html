@@ -57,6 +57,13 @@ function replaceItalic(italicMatch) {
     return '<em>' + italicMatch.slice(1, -1) + '</em>';
 }
 
+function replaceCode(codeMatch) {
+    if (codeMatch.slice(0, 2) === '``') {
+        return '<code>' + htmlEscape(codeMatch.slice(2, -2)) + '</code>';
+    }
+    return '<code>' + htmlEscape(codeMatch.slice(1, -1)) + '</code>';
+}
+
 function replaceInline(txt, reReplace, replacer) {
     var aMatch = txt.match(reReplace), ii, len;
     if (aMatch) {
@@ -68,47 +75,57 @@ function replaceInline(txt, reReplace, replacer) {
     return txt;
 }
 
+function blockArray(mdText) {
+    var aMd;
+    mdText = mdText.replace(/  \n/gi, "<br>"); // replace "  \n" with "<br>"
+    mdText = mdText.replace(/<!--[\s\S]*?-->/g, ""); // remove HTML comments
+
+    aMd = mdText.split("\n");
+    aMd.push('');
+    return aMd;
+}
+
 function convertFromMd(md) {
     var aMd,
         htmlTmp = '',
         htmlNext = '',
         countTmp = 0,
         openTag = '',
-        blockquote = 0,
-        newBlockquote = 0,
+        htmlTag = '',
+        blockquote = [0, 0],
         htmlMd = [],
         ii,
         len,
         reLinks = /\[[^\]]+\]\([^\)]+\)/g;
 
-    md = md.replace(/  \n/gi, "<br>"); // replace "  \n" with "<br>"
-    aMd = md.split("\n");
+    
+    aMd = blockArray(md);
     len = aMd.length;
-    aMd.push('');
 
-    for (ii = 0; ii < len; ii = ii + 1) {
+    for (ii = 0; ii < len - 1; ii = ii + 1) {
         htmlTmp = aMd[ii];
         htmlNext = aMd[ii + 1];
         
-        // block HTML comments
-        // should all HTML work like this? sorta.
-        if (htmlTmp.slice(0, 4) === '<!--') {
-            openTag = 'comment';
+        // block HTML 
+        if (htmlTmp.slice(0, 1) === '<') {
+            htmlTag = htmlTmp.slice(1, htmlTmp.indexOf('>'));
         }
-        if (htmlTmp.slice(0, 3) === '-->') {
-            openTag = '';
+        if (htmlTag && htmlTmp.slice(0, 2) === '</') {
+            htmlTag = '';
+            htmlMd.push(htmlTmp);
             continue;
         }
-        if (openTag === 'comment') {
+        if (htmlTag) {
+            htmlMd.push(htmlTmp);
             continue;
         }
-        
+
         if (htmlTmp.slice(0, 1) === '>') {
-            newBlockquote = countHash(htmlTmp + ' ', '> ');
-            htmlTmp = htmlTmp.slice(newBlockquote * 2);
+            blockquote[1] = countHash(htmlTmp + ' ', '> ');
+            htmlTmp = htmlTmp.slice(blockquote[1] * 2);
         } else {
-            if (blockquote > 0) {
-                newBlockquote = 0;
+            if (blockquote[0] > 0) {
+                blockquote[1] = 0;
             }
         }
         
@@ -205,14 +222,18 @@ function convertFromMd(md) {
         htmlTmp = replaceInline(htmlTmp, /\*[^\*]+\*/g, replaceItalic);
         htmlTmp = replaceInline(htmlTmp, /\_[^\_]+\_/g, replaceItalic);
 
+        // code
+        htmlTmp = replaceInline(htmlTmp, /``.+``/g, replaceCode);
+        htmlTmp = replaceInline(htmlTmp, /`[^`]+`/g, replaceCode);
+
         // blockquote wrap
-        if (newBlockquote !== blockquote) {
-            if (newBlockquote > blockquote) {
+        if (blockquote[1] !== blockquote[0]) {
+            if (blockquote[1] > blockquote[0]) {
                 htmlTmp = '<blockquote>' + htmlTmp;
             } else {
                 htmlTmp = '</blockquote>' + htmlTmp;
             }
-            blockquote = newBlockquote;
+            blockquote[0] = blockquote[1];
         }
 
         htmlMd.push(htmlTmp);
