@@ -124,6 +124,11 @@ function convertFromMd(md) {
                 openTag = '';
                 htmlMd.push(htmlTmp);
             }
+            if (openTag === 'ol') {
+                htmlTmp = '</ol>';
+                openTag = '';
+                htmlMd.push(htmlTmp);
+            }
             continue;
         }
         // BLOCK
@@ -153,16 +158,16 @@ function convertFromMd(md) {
         }
         
         // ol
-        /*
-        if (htmlTmp.slice(0, 2) === '* ' || htmlTmp.slice(0, 2) === '+ ') {
-            countTmp = htmlTmp.slice(1).search(/^\s/) + 1;
-            if (openTag === 'ul') {
+        if (/^\d+\. /.test(htmlTmp)) {
+            console.log('found ol');
+            countTmp = htmlTmp.search(/[^0-9\.\s]\w/);
+            if (openTag === 'ol') {
                 htmlTmp = '<li>' + htmlTmp.slice(countTmp);
             } else {
-                openTag = 'ul';
-                htmlTmp = '<ul><li>' + htmlTmp.slice(countTmp);
+                openTag = 'ol';
+                htmlTmp = '<ol><li>' + htmlTmp.slice(countTmp);
             }
-        }*/
+        }
 
         // pre
         

@@ -76,13 +76,11 @@ Should use asterisks, pluses and hyphens interchangeably (do hyphens later)
 +   Green
 *   Blue
 
-<!--
 Ordered lists use numbers followed by periods
 
 1.  Bird
 2.  McHale
-3.  Parish
--->
+333.  Parish
 
 ###Inline Elements
 
@@ -132,6 +130,8 @@ The back slash should make any MD character be displayed as a literal:
 \.   dot  
 \!   exclamation mark  
 
+-->
+
 ###HTML
 
 It should handle HTML properly (by ignoring normal md parsing.) Here is an example from the [spec](http://daringfireball.net/projects/markdown/syntax) for dealing with block-level HTML
@@ -145,4 +145,3 @@ This is a regular paragraph.
 </table>
 
 This is another regular paragraph.
--->
