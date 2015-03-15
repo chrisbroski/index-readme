@@ -195,4 +195,4 @@ Daring Fireball's autolinking (surrounding URLs with and brackets) seems pointle
 
 Reference-style link and image URLs. I really don't see the advantage of these.
 
-Github flavor extras: strikethrough, fenced code blocks, sytax highlighting and tables
+Github flavor extras: strikethrough, fenced code blocks, syntax highlighting and tables
