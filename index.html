@@ -104,33 +104,22 @@ function convertFromMd(md) {
         }
         // pre
         
-        if (htmlTmp.slice(0, 4) === '    '/* or tab */) {
+        if (htmlTmp.slice(0, 4) === '    ' || htmlTmp.slice(0, 4) === "\t") {
             // pre
             if (openTag === '') {
                 openTag = 'pre';
-                htmlTmp = '<pre>' + htmlTmp;
+                htmlTmp = '<pre>' + htmlTmp.slice(4);
             } else {
                 //
+                htmlTmp = htmlTmp.slice(4);
             }
         } else if (htmlTmp.slice(0, 1) === '>') {
             if (blockquote === 0) {
                 blockquote = 1;
-                htmlTmp = '<blockquote>' + htmlTmp.slice(0, 1);
+                htmlTmp = '<blockquote>' + htmlTmp.slice(1);
             } else {
-                //htmlTmp = '<blockquote>' + htmlTmp;
+                htmlTmp = htmlTmp.slice(1);
             }
-            // blockquote
-            /*
-            if (openTag !== 'pre') {
-                openTag = 'pre';
-                htmlTmp = '<pre>' + htmlTmp.slice(4);
-            } else {
-                htmlTmp = htmlTmp.slice(4);
-            }
-            if (htmlNext.slice(0, 4) !== '    ') {
-                openTag = '';
-                htmlTmp = htmlTmp + '</pre>' + "\n";
-            }*/
         } else {
             // p
             if (htmlNext.slice(0, 1) === '') {
