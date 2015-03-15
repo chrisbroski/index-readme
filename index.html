@@ -86,20 +86,17 @@ function blockArray(mdText) {
 }
 
 function convertFromMd(md) {
-    var aMd,
+    var aMd = blockArray(md),
         htmlTmp = '',
         htmlNext = '',
         countTmp = 0,
         openTag = '',
-        htmlTag = '',
+        htmlTag = false,
         blockquote = [0, 0],
         htmlMd = [],
         ii,
-        len,
-        reLinks = /\[[^\]]+\]\([^\)]+\)/g;
+        len;
 
-    
-    aMd = blockArray(md);
     len = aMd.length;
 
     for (ii = 0; ii < len - 1; ii = ii + 1) {
@@ -108,10 +105,10 @@ function convertFromMd(md) {
         
         // block HTML 
         if (htmlTmp.slice(0, 1) === '<') {
-            htmlTag = htmlTmp.slice(1, htmlTmp.indexOf('>'));
+            htmlTag = true;
         }
         if (htmlTag && htmlTmp.slice(0, 2) === '</') {
-            htmlTag = '';
+            htmlTag = false;
             htmlMd.push(htmlTmp);
             continue;
         }
@@ -120,6 +117,7 @@ function convertFromMd(md) {
             continue;
         }
 
+        // blockquote
         if (htmlTmp.slice(0, 1) === '>') {
             blockquote[1] = countHash(htmlTmp + ' ', '> ');
             htmlTmp = htmlTmp.slice(blockquote[1] * 2);
@@ -148,7 +146,8 @@ function convertFromMd(md) {
             }
             continue;
         }
-        // BLOCK
+        
+        // Block elements
         
         // h1
         if (htmlNext.slice(0, 1) === '=') {
@@ -176,7 +175,6 @@ function convertFromMd(md) {
         
         // ol
         if (/^\d+\. /.test(htmlTmp)) {
-            console.log('found ol');
             countTmp = htmlTmp.search(/[^0-9\.\s]\w/);
             if (openTag === 'ol') {
                 htmlTmp = '<li>' + htmlTmp.slice(countTmp);
@@ -187,14 +185,12 @@ function convertFromMd(md) {
         }
 
         // pre
-        
         if (htmlTmp.slice(0, 4) === '    ' || htmlTmp.slice(0, 4) === "\t") {
             // pre
             if (openTag === '') {
                 openTag = 'pre';
                 htmlTmp = '<pre><code>' + htmlEscape(htmlTmp.slice(4));
             } else {
-                //
                 htmlTmp = htmlTmp.slice(4);
             }
         } else {
@@ -204,7 +200,7 @@ function convertFromMd(md) {
             }
         }
 
-        // INLINE
+        // Inline elements
         
         if (openTag === 'pre') {
             htmlMd.push(htmlTmp);
@@ -212,7 +208,7 @@ function convertFromMd(md) {
         }
 
         // links
-        htmlTmp = replaceInline(htmlTmp, reLinks, replaceLink);
+        htmlTmp = replaceInline(htmlTmp, /\[[^\]]+\]\([^\)]+\)/g, replaceLink);
 
         // bold
         htmlTmp = replaceInline(htmlTmp, /\*\*[^\*]+\*\*/g, replaceBold);

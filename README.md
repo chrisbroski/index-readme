@@ -103,7 +103,7 @@ One asterisk should surround *italicized text* It should also handle _underscore
 
 ####Code
 
-If you want to demo some code inline like so `if (x < y)` use back ticks.
+If you want to demo some code inline like so `if (x < y)` use back ticks. If you use double back ticks it will allow single ones inside inline code.
 
 ``There is a literal backtick (`) here.``
 
@@ -152,7 +152,6 @@ This is a regular paragraph.
 <table>
     <tr>
         <td>Foo</td>
-        
     </tr>
 </table>
 
