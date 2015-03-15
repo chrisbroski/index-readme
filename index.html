@@ -60,6 +60,7 @@ function convertFromMd(md) {
         htmlNext = '',
         countTmp = 0,
         openTag = '',
+        blockquote = 0,
         htmlMd = [],
         ii,
         len,
@@ -74,6 +75,16 @@ function convertFromMd(md) {
         htmlTmp = aMd[ii];
         htmlNext = aMd[ii + 1];
         if (htmlTmp === '' || htmlTmp.slice(0, 1) === '=' || htmlTmp.slice(0, 1) === '-') {
+            if (blockquote > 0) {
+                htmlTmp = '</blockquote>';
+                blockquote = 0;
+                htmlMd.push(htmlTmp);
+            }
+            if (openTag === 'pre') {
+                htmlTmp = '</pre>';
+                openTag = '';
+                htmlMd.push(htmlTmp);
+            }
             continue;
         }
         // BLOCK
@@ -92,7 +103,24 @@ function convertFromMd(md) {
             htmlTmp = '<h' + countTmp + '>' + htmlTmp.slice(countTmp) + '</h' + countTmp + '>';
         }
         // pre
-        if (htmlTmp.slice(0, 4) === '    ') {
+        
+        if (htmlTmp.slice(0, 4) === '    '/* or tab */) {
+            // pre
+            if (openTag === '') {
+                openTag = 'pre';
+                htmlTmp = '<pre>' + htmlTmp;
+            } else {
+                //
+            }
+        } else if (htmlTmp.slice(0, 1) === '>') {
+            if (blockquote === 0) {
+                blockquote = 1;
+                htmlTmp = '<blockquote>' + htmlTmp.slice(0, 1);
+            } else {
+                //htmlTmp = '<blockquote>' + htmlTmp;
+            }
+            // blockquote
+            /*
             if (openTag !== 'pre') {
                 openTag = 'pre';
                 htmlTmp = '<pre>' + htmlTmp.slice(4);
@@ -102,7 +130,7 @@ function convertFromMd(md) {
             if (htmlNext.slice(0, 4) !== '    ') {
                 openTag = '';
                 htmlTmp = htmlTmp + '</pre>' + "\n";
-            }
+            }*/
         } else {
             // p
             if (htmlNext.slice(0, 1) === '') {

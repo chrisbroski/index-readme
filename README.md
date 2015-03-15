@@ -22,6 +22,19 @@ All header types h1 - h6 with the = and - types for h1 and h2
 
 It should handle adding &lt;p&gt; tags properly, plus add &lt;br&gt; tags for two spaces at the end of a line.
 
+###Code
+
+Code block should start with 4 spaces
+
+    function getEventTarget(e) {
+        var targ;
+        targ = e.target || e.srcElement;
+        if (targ.nodeType === 3) { // defeat Safari bug
+            targ = targ.parentNode;
+        }
+        return targ;
+    }
+
 ###Block Quotes
 
 It should do this, plus nesting.
@@ -47,11 +60,11 @@ It should also dealing with all other MD stuff inside of a quote.
 
 ####Unordered Lists
 
-Should use asterisks, pluses and hyphens interchangeably
+Should use asterisks, pluses and hyphens interchangeably (do hyphens later)
 
 *   Red
 +   Green
--   Blue
+*   Blue
 
 Ordered lists use numbers followed by periods
 
