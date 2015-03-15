@@ -49,12 +49,22 @@ It should also dealing with all other MD stuff inside of a quote.
 
 > ## This is a header.
 > 
+> Here's some example code:
+> 
+>     return shell_exec("echo $input | $markdown_script");
+
+<!--
+It should also dealing with all other MD stuff inside of a quote.
+
+> ## This is a header.
+> 
 > 1.   This is the first list item.
 > 2.   This is the second list item.
 > 
 > Here's some example code:
 > 
 >     return shell_exec("echo $input | $markdown_script");
+-->
 
 ###Lists
 
@@ -66,11 +76,13 @@ Should use asterisks, pluses and hyphens interchangeably (do hyphens later)
 +   Green
 *   Blue
 
+<!--
 Ordered lists use numbers followed by periods
 
 1.  Bird
 2.  McHale
 3.  Parish
+-->
 
 ###Inline Elements
 
@@ -86,6 +98,7 @@ Two asterisks should surround **bold text**. It should also handle two __undersc
 
 One asterisk should surround *italicized text* It should also handle _underscores_.
 
+<!--
 ###Automatic Escaping of Special Characters
 
 It should escape this:
@@ -132,3 +145,4 @@ This is a regular paragraph.
 </table>
 
 This is another regular paragraph.
+-->

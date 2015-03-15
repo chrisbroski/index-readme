@@ -20,12 +20,16 @@ pre {padding: 1em; background: #eee; overflow: auto; }
 </div>
 
 <script>
-function countHash(txt) {
+function countHash(txt, symb) {
+    var len = txt.length, trim = 6;
     if (!txt) {
         return -1;
     }
-    txt = txt.slice(0, 6);
-    return txt.lastIndexOf('#') + 1;
+    if (len < trim) {
+        trim = len
+    }
+    txt = txt.slice(0, trim);
+    return (txt.match(new RegExp(symb, "g")) || []).length
 }
 
 function replaceLink(mdLink) {
@@ -61,6 +65,7 @@ function convertFromMd(md) {
         countTmp = 0,
         openTag = '',
         blockquote = 0,
+        newBlockquote = 0,
         htmlMd = [],
         ii,
         len,
@@ -74,14 +79,39 @@ function convertFromMd(md) {
     for (ii = 0; ii < len; ii = ii + 1) {
         htmlTmp = aMd[ii];
         htmlNext = aMd[ii + 1];
-        if (htmlTmp === '' || htmlTmp.slice(0, 1) === '=' || htmlTmp.slice(0, 1) === '-') {
+        
+        // block HTML comments
+        // should all HTML work like this? sorta.
+        if (htmlTmp.slice(0, 4) === '<!--') {
+            openTag = 'comment';
+        }
+        if (htmlTmp.slice(0, 3) === '-->') {
+            openTag = '';
+            continue;
+        }
+        if (openTag === 'comment') {
+            continue;
+        }
+        
+        //console.log(htmlTmp.slice(0, 1));
+        if (htmlTmp.slice(0, 1) === '>') {
+            newBlockquote = countHash(htmlTmp + ' ', '> ');
+            htmlTmp = htmlTmp.slice(newBlockquote * 2);
+        } else {
             if (blockquote > 0) {
-                htmlTmp = '</blockquote>';
-                blockquote = 0;
-                htmlMd.push(htmlTmp);
+                newBlockquote = 0;
             }
+        }
+        
+        if (htmlTmp === '' || htmlTmp.slice(0, 1) === '=' || htmlTmp.slice(0, 1) === '-') {
+            // close open tags
             if (openTag === 'pre') {
                 htmlTmp = '</pre>';
+                openTag = '';
+                htmlMd.push(htmlTmp);
+            }
+            if (openTag === 'ul') {
+                htmlTmp = '</ul>';
                 openTag = '';
                 htmlMd.push(htmlTmp);
             }
@@ -99,9 +129,34 @@ function convertFromMd(md) {
         }
         // h3 - h6
         if (htmlTmp.slice(0, 1) === '#') {
-            countTmp = countHash(htmlTmp);
+            countTmp = countHash(htmlTmp, '#');
             htmlTmp = '<h' + countTmp + '>' + htmlTmp.slice(countTmp) + '</h' + countTmp + '>';
         }
+        // ul
+        if (htmlTmp.slice(0, 2) === '* ' || htmlTmp.slice(0, 2) === '+ ') {
+            countTmp = htmlTmp.slice(1).search(/^\s/) + 1;
+            //console.log(countTmp);
+            if (openTag === 'ul') {
+                htmlTmp = '<li>' + htmlTmp.slice(countTmp);
+            } else {
+                openTag = 'ul';
+                htmlTmp = '<ul><li>' + htmlTmp.slice(countTmp);
+            }
+        }
+        
+        // ol
+        /*
+        if (htmlTmp.slice(0, 2) === '* ' || htmlTmp.slice(0, 2) === '+ ') {
+            countTmp = htmlTmp.slice(1).search(/^\s/) + 1;
+            console.log(countTmp);
+            if (openTag === 'ul') {
+                htmlTmp = '<li>' + htmlTmp.slice(countTmp);
+            } else {
+                openTag = 'ul';
+                htmlTmp = '<ul><li>' + htmlTmp.slice(countTmp);
+            }
+        }*/
+
         // pre
         
         if (htmlTmp.slice(0, 4) === '    ' || htmlTmp.slice(0, 4) === "\t") {
@@ -113,16 +168,9 @@ function convertFromMd(md) {
                 //
                 htmlTmp = htmlTmp.slice(4);
             }
-        } else if (htmlTmp.slice(0, 1) === '>') {
-            if (blockquote === 0) {
-                blockquote = 1;
-                htmlTmp = '<blockquote>' + htmlTmp.slice(1);
-            } else {
-                htmlTmp = htmlTmp.slice(1);
-            }
         } else {
             // p
-            if (htmlNext.slice(0, 1) === '') {
+            if (htmlNext.slice(0, 1) === '' && !openTag) {
                 htmlTmp = '<p>' + htmlTmp;
             }
         }
@@ -139,6 +187,17 @@ function convertFromMd(md) {
         // italic
         htmlTmp = replaceInline(htmlTmp, /\*[^\*]+\*/g, replaceItalic);
         htmlTmp = replaceInline(htmlTmp, /\_[^\_]+\_/g, replaceItalic);
+
+        // blockquote wrap
+        if (newBlockquote !== blockquote) {
+            console.log(newBlockquote, blockquote);
+            if (newBlockquote > blockquote) {
+                htmlTmp = '<blockquote>' + htmlTmp;
+            } else {
+                htmlTmp = '</blockquote>' + htmlTmp;
+            }
+            blockquote = newBlockquote;
+        }
 
         htmlMd.push(htmlTmp);
     }
