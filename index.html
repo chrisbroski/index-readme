@@ -79,6 +79,9 @@ function replaceInline(txt, reReplace, replacer) {
 
 function blockArray(mdText) {
     var aMd;
+    mdText = mdText.replace(/\r\n/g, "\n"); // DOS to Unix
+    mdText = mdText.replace(/\r/g, "\n"); // Mac to Unix
+
     mdText = mdText.replace(/  \n/gi, "<br>"); // replace "  \n" with "<br>"
     mdText = mdText.replace(/<!--[\s\S]*?-->/g, ""); // remove HTML comments
 
