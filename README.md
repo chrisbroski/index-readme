@@ -47,18 +47,10 @@ This is some comments -->
 It should do this, plus nesting.
 
 > This is the first level of quoting.
->
+> 
 > > This is nested blockquote.
->
+> 
 > Back to the first level.
-
-It should also dealing with all other MD stuff inside of a quote.
-
-> ## This is a header.
-> 
-> Here's some example code:
-> 
->     return shell_exec("echo $input | $markdown_script");
 
 It should also dealing with all other MD stuff inside of a quote.
 
@@ -79,7 +71,7 @@ Should use asterisks, pluses and hyphens interchangeably (do hyphens later)
 
 *   Red
 +   Green
-*   Blue
+-   Blue
 
 Ordered lists use numbers followed by periods
 
@@ -107,7 +99,15 @@ If you want to demo some code inline like so `if (x < y)` use back ticks. If you
 
 ``There is a literal backtick (`) here.``
 
+###Images
+
+Like links they start with ![ then have alt text ending with ], then have its SRC attribute in parenthesis () ![spinner](/img/spinner.gif)
+
 <!--
+####Autolinking
+
+Like GitHub flavored markdown: https://help.github.com/articles/github-flavored-markdown/ it will auto-link anything starting with http:// or https://
+
 ###Automatic Escaping of Special Characters
 
 It should escape this:
@@ -140,7 +140,6 @@ The back slash should make any MD character be displayed as a literal:
 \-   minus sign (hyphen)  
 \.   dot  
 \!   exclamation mark  
-
 -->
 
 ###HTML
@@ -162,7 +161,7 @@ Not Yet Implemented
 
 ###Automatic Escaping of Special Characters
 
-I'd like to escape &amp; when it is not a part of a HTML entity (&amp;nbsp; for example) and &lt; when it isn't part of an HTML tag. How do I determine the difference?
+I'd like to escape &amp; when it is not a part of a HTML entity (&amp;nbsp; for example but not &nbsp;) and < but not <br> when it isn't part of an HTML tag. How do I determine the difference?
 
 ###Escaping
 
@@ -171,10 +170,6 @@ The back slash should make any MD character be displayed as a literal:
 ###Markdown inside list items
 
 It currently does not process block element: paragraphs and code blocks.
-
-###Images
-
-This seems easy enough to implement, but not much benefit.
 
 ###URL autolinking
 
