@@ -1,13 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1.2, user-scalable=no">
+<title>README</title>
+<style type="text/css">
+html {padding: 10px 10px 200px; font-family: droid sans, sans-serif; }
+body {margin: 0 auto; max-width: 580px; }
+div.article > *:first-child {margin-top: 0; }
+div.article p {line-height: 1.4em; font-size: 17px; }
+
+h1 {border-bottom: 1px solid #ddd; }
+pre {padding: 1em; background: #eee; overflow: auto; }
+blockquote {margin: 16px 0; padding: 0 15px; color: #777; border-left: 4px solid #ddd; }
+table {border-collapse: collapse; }
+table td {border: 1px solid #ddd; padding: 6px 13px; }
+</style>
+
+<body>
+<div class="article">
+<div data-src="README.md" class="mdImport"></div>
+</div>
+
+<script>
+/*jslint browser: true, regexp: true, sloppy: true, continue: true */
+
 function countHash(txt, symb) {
     var len = txt.length, trim = 6;
     if (!txt) {
         return -1;
     }
     if (len < trim) {
-        trim = len
+        trim = len;
     }
     txt = txt.slice(0, trim);
-    return (txt.match(new RegExp(symb, "g")) || []).length
+    return (txt.match(new RegExp(symb, "g")) || []).length;
 }
 
 function htmlEscape(str) {
@@ -30,7 +57,7 @@ function replaceLink(mdLink) {
     var linkText, linkHref = '';
     linkText = mdLink.slice(1, mdLink.indexOf(']('));
     linkHref = mdLink.slice(mdLink.indexOf('](') + 2, -1);
-    return '<a href="' + linkHref + '">' + linkText + '</a>'
+    return '<a href="' + linkHref + '">' + linkText + '</a>';
 }
 
 function replaceBold(boldMatch) {
@@ -64,7 +91,7 @@ function blockArray(mdText) {
     mdText = mdText.replace(/\r\n/g, "\n"); // DOS to Unix
     mdText = mdText.replace(/\r/g, "\n"); // Mac to Unix
 
-    mdText = mdText.replace(/  \n/gi, "<br>"); // replace "  \n" with "<br>"
+    mdText = mdText.replace(/[ ]{2}\n/gi, "<br>"); // replace "  \n" with "<br>"
     mdText = mdText.replace(/<!--[\s\S]*?-->/g, ""); // remove HTML comments
 
     aMd = mdText.split("\n");
@@ -89,7 +116,7 @@ function convertFromMd(md) {
     for (ii = 0; ii < len - 1; ii = ii + 1) {
         htmlTmp = aMd[ii];
         htmlNext = aMd[ii + 1];
-        
+
         // block HTML 
         if (htmlTmp.slice(0, 1) === '<') {
             htmlTag = true;
@@ -113,7 +140,7 @@ function convertFromMd(md) {
                 blockquote[1] = 0;
             }
         }
-        
+
         if (htmlTmp === '' || htmlTmp.slice(0, 1) === '=' || htmlTmp.slice(0, 1) === '-') {
             // close open tags
             if (openTag === 'pre') {
@@ -133,9 +160,9 @@ function convertFromMd(md) {
             }
             continue;
         }
-        
+
         // Block elements
-        
+
         // h1
         if (htmlNext.slice(0, 1) === '=') {
             htmlTmp = '<h1>' + htmlTmp + '</h1>';
@@ -188,14 +215,14 @@ function convertFromMd(md) {
         }
 
         // Inline elements
-        
+
         if (openTag === 'pre') {
             htmlMd.push(htmlTmp);
             continue;
         }
-        
+
         // image
-        htmlTmp = replaceInline(htmlTmp, /\!\[[^\]]+\]\([^\)]+\)/g, replaceImg);;//![m'lady](http://i.imgur.com/v8IVDka.jpg)
+        htmlTmp = replaceInline(htmlTmp, /\!\[[^\]]+\]\([^\)]+\)/g, replaceImg);
 
         // links
         htmlTmp = replaceInline(htmlTmp, /\[[^\]]+\]\([^\)]+\)/g, replaceLink);
@@ -229,23 +256,24 @@ function convertFromMd(md) {
 }
 
 function mdInclude(filePath, el) {
-    var importedHTML = '',
-        xhr = new XMLHttpRequest();
+    var xhr = new XMLHttpRequest();
 
     // get file with ajax
     xhr.open("GET", filePath, true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4) {
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
             if (xhr.status === 200 || xhr.status === 304) {
                 el.innerHTML = convertFromMd(xhr.responseText);
             } else if (xhr.status === 404) {
-                console.log('Not found: ' + xhr.responseURL);
+                el.innerHTML = 'Not found: ' + xhr.responseURL;
             } else {
-                console.log(xhr);
+                el.innerHTML = 'Error status: ' + xhr.status;
             }
         }
-    }
-    xhr.send(null);
+    };
+    xhr.send('');
 }
 
 mdInclude('README.md', document.querySelector('div.mdImport'));
+
+</script>
