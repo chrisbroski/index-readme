@@ -1,28 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="initial-scale=1.2, user-scalable=no">
-<title>README</title>
-<style type="text/css">
-html {padding: 10px 10px 200px; font-family: droid sans, sans-serif; }
-body {margin: 0 auto; max-width: 580px; }
-div.article > *:first-child {margin-top: 0; }
-div.article p {line-height: 1.4em; font-size: 17px; }
-
-h1 {border-bottom: 1px solid #ddd; }
-pre {padding: 1em; background: #eee; overflow: auto; }
-blockquote {margin: 16px 0; padding: 0 15px; color: #777; border-left: 4px solid #ddd; }
-table {border-collapse: collapse; }
-table td {border: 1px solid #ddd; padding: 6px 13px; }
-</style>
-
-<body>
-<div class="article">
-<div data-src="README.md" class="mdImport"></div>
-</div>
-
-<script>
 function countHash(txt, symb) {
     var len = txt.length, trim = 6;
     if (!txt) {
@@ -42,6 +17,13 @@ function htmlEscape(str) {
             .replace(/'/g, '&#39;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;');
+}
+
+function replaceImg(mdImg) {
+    var linkText, linkHref = '';
+    linkText = mdImg.slice(2, mdImg.indexOf(']('));
+    linkHref = mdImg.slice(mdImg.indexOf('](') + 2, -1);
+    return '<img src="' + linkHref + '" alt="' + linkText + '">';
 }
 
 function replaceLink(mdLink) {
@@ -177,7 +159,7 @@ function convertFromMd(md) {
                 htmlTmp = '<ul><li>' + htmlTmp.slice(countTmp);
             }
         }
-        
+
         // ol
         if (/^\d+\. /.test(htmlTmp)) {
             countTmp = htmlTmp.search(/[^0-9\.\s]\w/);
@@ -211,6 +193,9 @@ function convertFromMd(md) {
             htmlMd.push(htmlTmp);
             continue;
         }
+        
+        // image
+        htmlTmp = replaceInline(htmlTmp, /\!\[[^\]]+\]\([^\)]+\)/g, replaceImg);;//![m'lady](http://i.imgur.com/v8IVDka.jpg)
 
         // links
         htmlTmp = replaceInline(htmlTmp, /\[[^\]]+\]\([^\)]+\)/g, replaceLink);
@@ -264,5 +249,3 @@ function mdInclude(filePath, el) {
 }
 
 mdInclude('README.md', document.querySelector('div.mdImport'));
-
-</script>
