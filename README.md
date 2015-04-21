@@ -1,7 +1,7 @@
 README Index
 ============
 
-An index.html page that automatically imports and displays the README.md converted to HTML. Just plop this page in the root directlor of your GitHub repository, and when you deploy to GitHub Pages, your README.md file will converted to HTML and used as the default web page.
+An index.html page that automatically imports and displays the README.md converted to HTML. Just copy the *index.html* page in the root directory of your GitHub repository, and when you deploy to GitHub Pages, your README.md file will converted to HTML and used as the default web page.
 
 It uses [Showdown.js](https://github.com/showdownjs/showdown) for conversion (Most recent version from 2015-1-3) [Simple.css](https://github.com/chrisbroski/simple-css) for basic page layout and a little extra CSS so styles are similar in how your GitHub README is displayed from your repository. 
 
