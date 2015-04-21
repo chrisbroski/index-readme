@@ -7,8 +7,8 @@ It uses [Showdown.js](https://github.com/showdownjs/showdown) for conversion (Mo
 
 Most examples on this page are based on the [spec](http://daringfireball.net/projects/markdown/syntax) by Daring Fireball.
 
-Requirements
-------------
+Examples
+--------
 
 ###Headers
 
