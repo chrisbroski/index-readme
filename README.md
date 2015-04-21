@@ -1,14 +1,14 @@
-README Index
+Index README
 ============
 
-An index.html page that automatically imports and displays the README.md converted to HTML. Just copy the *index.html* page in the root directory of your GitHub repository, and when you deploy to GitHub Pages, your README.md file will converted to HTML and used as the default web page.
+Index README is a stand alone HTML page that automatically converts a GitHub repository's README.md to a web page. Just put a copy of the *index.html* page in the root directory of your GitHub repository, and when you deploy to [GitHub Pages](https://pages.github.com/), your README.md file will converted to HTML and used as the default web page.
 
-It uses [Showdown.js](https://github.com/showdownjs/showdown) for conversion (Most recent version from 2015-01-03) [Simple.css](https://github.com/chrisbroski/simple-css) for basic page layout and a little extra CSS based on [Github style markdown](https://help.github.com/articles/github-flavored-markdown/) so styles are similar to how your GitHub README file is displayed from your repository. 
+It uses [Showdown.js](https://github.com/showdownjs/showdown) for markdown conversion (most recent version from 2015-01-03) [Simple.css](https://github.com/chrisbroski/simple-css) for basic page layout and a little extra CSS based on [Github style markdown](https://help.github.com/articles/github-flavored-markdown/) so styles are similar to how your GitHub README file is displayed from your repository. 
 
 Most examples on this page are based on the [spec](http://daringfireball.net/projects/markdown/syntax) by Daring Fireball.
 
-Requirements
-------------
+Examples
+--------
 
 ###Headers
 
