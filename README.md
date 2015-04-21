@@ -141,7 +141,6 @@ The back slash should make any MD character be displayed as a literal:
 \-   minus sign (hyphen)  
 \.   dot  
 \!   exclamation mark  
--->
 
 ###HTML
 
