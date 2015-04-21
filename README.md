@@ -3,7 +3,7 @@ README Index
 
 An index.html page that automatically imports and displays the README.md converted to HTML. Just plop this page in the root directlor of your GitHub repository, and when you deploy to GitHub Pages, your README.md file will converted to HTML and used as the default web page.
 
-It uses [Showdown.js](https://github.com/showdownjs/showdown) for conversion (Most recent version from 2015-1-3) Simple.css 
+It uses [Showdown.js](https://github.com/showdownjs/showdown) for conversion (Most recent version from 2015-1-3) [Simple.css](https://github.com/chrisbroski/simple-css) for basic page layout and a little extra CSS so styles are similar in how your GitHub README is displayed from your repository. 
 
 The examples on this page are from the [spec](http://daringfireball.net/projects/markdown/syntax) by Daring Fireball. The styles are based on [Github style markdown](https://help.github.com/articles/github-flavored-markdown/)
 
@@ -147,7 +147,7 @@ The back slash should make any MD character be displayed as a literal:
 
 It should handle HTML properly (by ignoring normal md parsing.) Here is an example from the [spec](http://daringfireball.net/projects/markdown/syntax) for dealing with block-level HTML
 
-This is a regular paragraph. Below is an HTML table.
+This is a table built with real HTML.
 
 <table>
     <tr>
