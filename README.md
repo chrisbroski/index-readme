@@ -1,7 +1,9 @@
 README Index
 ============
 
-An index.html page that automatically imports and displays the README.md converted to HTML.
+An index.html page that automatically imports and displays the README.md converted to HTML. Just plop this page in the root directlor of your GitHub repository, and when you deploy to GitHub Pages, your README.md file will converted to HTML and used as the default web page.
+
+It uses [Showdown.js](https://github.com/showdownjs/showdown) for conversion (Most recent version from 2015-1-3) Simple.css 
 
 The examples on this page are from the [spec](http://daringfireball.net/projects/markdown/syntax) by Daring Fireball. The styles are based on [Github style markdown](https://help.github.com/articles/github-flavored-markdown/)
 
@@ -101,9 +103,8 @@ If you want to demo some code inline like so `if (x < y)` use back ticks. If you
 
 ###Images
 
-Like links they start with ![ then have alt text ending with ], then have its SRC attribute in parenthesis () ![spinner](/img/spinner.gif)
+Like links, they start with !\[ then have alt text ending with ], then have its SRC attribute in parenthesis () ![spinner](/img/spinner.gif)
 
-<!--
 ####Autolinking
 
 Like GitHub flavored markdown: https://help.github.com/articles/github-flavored-markdown/ it will auto-link anything starting with http:// or https://
@@ -146,48 +147,10 @@ The back slash should make any MD character be displayed as a literal:
 
 It should handle HTML properly (by ignoring normal md parsing.) Here is an example from the [spec](http://daringfireball.net/projects/markdown/syntax) for dealing with block-level HTML
 
-This is a regular paragraph.
+This is a regular paragraph. Below is an HTML table.
 
 <table>
     <tr>
         <td>Foo</td>
     </tr>
 </table>
-
-This is another regular paragraph.
-
-Not Yet Implemented
--------------------
-
-###Automatic Escaping of Special Characters
-
-I'd like to escape &amp; when it is not a part of a HTML entity (&amp;nbsp; for example but not &nbsp;) and < but not <br> when it isn't part of an HTML tag. How do I determine the difference?
-
-###Escaping
-
-The back slash should make any MD character be displayed as a literal:
-
-###Markdown inside list items
-
-It currently does not process block element: paragraphs and code blocks.
-
-###URL autolinking
-
-I like Github's auto-linking, (link anything starting with http:// or https://)
-
-###Title Attribute on Hyperlinks
-
-No Desire to Implement
-----------------------
-
-If I keep working on this, I may implement these features but I don't see much value in them.
-
-What is the point of using a dash (-) for unordered lists? If the asterisk and plus aren't good enough for you, you are too high-maintenance.
-
-Hanging indents on list items is just stupid. Use text wrapping.
-
-Daring Fireball's autolinking (surrounding URLs with and brackets) seems pointless and inconvenient to implement.
-
-Reference-style link and image URLs. I really don't see the advantage of these.
-
-Github flavor extras: strikethrough, fenced code blocks, syntax highlighting and tables
